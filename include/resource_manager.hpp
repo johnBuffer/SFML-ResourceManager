@@ -1,3 +1,5 @@
+#pragma once
+
 #include <map>
 #include <SFML/Graphics.hpp>
 
@@ -14,7 +16,7 @@ private:
 	static ResourceManager<T> instance;
 
 public:
-	ResourceManager(StrCstRef resource_path_prefix)
+	ResourceManager(StrCstRef resource_path_prefix = "")
 		: prefix(resource_path_prefix)
 	{}
 
@@ -60,17 +62,33 @@ public:
 		}
 		return sprite;
 	}
+	
+	static void Initialize(const std::string& prefix)
+	{
+		instance.prefix = prefix;
+	}
 
-	static sf::Text createText(const T& font, uint32_t size, sf::Color color = sf::Color::White, StrCstRef str = "")
+	static sf::Text CreateText(const T& font, uint32_t size, sf::Color color = sf::Color::White, StrCstRef str = "")
 	{
 		return instance.createText(font, size, color, str);
 	}
 
-	static sf::Sprite createSprite(const T& texture, sf::Vector2f scale = sf::Vector2f(1.0f, 1.0f), sf::Vector2f origin = {})
+	static sf::Sprite CreateSprite(const T& texture, sf::Vector2f scale = sf::Vector2f(1.0f, 1.0f), sf::Vector2f origin = {})
 	{
 		return instance.createSprite(texture, scale, origin);
+	}
+
+	static bool RegisterFont(StrCstRef filename, const T& alias) {
+		return instance.registerFont(filename, alias);
+	}
+
+	static bool RegisterTexture(StrCstRef filename, const T& alias) {
+		return instance.registerTexture(filename, alias);
 	}
 };
 
 template<typename T>
 ResourceManager<T> ResourceManager<T>::instance;
+
+using BaseManager = ResourceManager<std::string>;
+
